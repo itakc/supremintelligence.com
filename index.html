@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Supintelligence</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      background: #020712;
+      overflow-x: hidden;
+    }
+
+    .hero {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+
+      background-image: url("vitrine.png");
+      background-position: center center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .search-zone {
+      position: absolute;
+      left: 4%;
+      bottom: 8%;
+
+      width: 46%;
+      max-width: 850px;
+      min-width: 280px;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+
+      gap: 14px;
+
+      width: 100%;
+
+      padding: 14px 18px;
+
+      border-radius: 999px;
+
+      background: rgba(0, 20, 55, 0.58);
+
+      border: 2px solid rgba(0, 155, 255, 0.65);
+
+      box-shadow:
+        0 0 18px rgba(0, 145, 255, 0.35),
+        0 0 40px rgba(0, 85, 255, 0.18),
+        inset 0 0 20px rgba(255, 255, 255, 0.03);
+
+      backdrop-filter: blur(10px);
+
+      transition: all 0.25s ease;
+    }
+
+    .search-bar:focus-within {
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 0 25px rgba(0, 195, 255, 0.55),
+        0 0 55px rgba(0, 100, 255, 0.28),
+        inset 0 0 20px rgba(255, 255, 255, 0.05);
+    }
+
+    .icon-btn,
+    .voice-btn {
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      width: 58px;
+      height: 58px;
+
+      border-radius: 50%;
+
+      color: white;
+
+      font-size: 34px;
+
+      background:
+        radial-gradient(
+          circle at 30% 30%,
+          #008cff,
+          #00366f
+        );
+
+      box-shadow:
+        0 0 18px rgba(0, 160, 255, 0.45);
+
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .icon-btn:hover,
+    .voice-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .icon-btn:active,
+    .voice-btn:active {
+      transform: scale(0.98);
+    }
+
+    .search-input {
+      flex: 1;
+
+      background: transparent;
+
+      border: none;
+      outline: none;
+
+      color: white;
+
+      font-size: 1.2rem;
+
+      padding: 0 10px;
+    }
+
+    .search-input::placeholder {
+      color: rgba(255, 255, 255, 0.58);
+    }
+
+    .mic-btn {
+      width: auto;
+      height: auto;
+
+      color: white;
+
+      font-size: 25px;
+
+      background: transparent;
+
+      box-shadow: none;
+    }
+
+    .voice-btn {
+      width: 64px;
+      height: 64px;
+
+      border-radius: 50%;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      background:
+        radial-gradient(
+          circle at 30% 30%,
+          #60e5ff,
+          #007bff 45%,
+          #003b9f 100%
+        );
+
+      box-shadow:
+        0 0 25px rgba(0, 180, 255, 0.55);
+
+      animation: pulse 2s infinite;
+    }
+
+    .bars {
+      display: flex;
+      align-items: center;
+
+      gap: 4px;
+
+      height: 22px;
+    }
+
+    .bars span {
+      width: 4px;
+
+      border-radius: 2px;
+
+      background: white;
+
+      animation:
+        equalizer 1s infinite ease-in-out;
+    }
+
+    .bars span:nth-child(1) {
+      height: 10px;
+      animation-delay: 0s;
+    }
+
+    .bars span:nth-child(2) {
+      height: 18px;
+      animation-delay: 0.15s;
+    }
+
+    .bars span:nth-child(3) {
+      height: 26px;
+      animation-delay: 0.3s;
+    }
+
+    .bars span:nth-child(4) {
+      height: 16px;
+      animation-delay: 0.45s;
+    }
+
+    .search-note {
+      margin-top: 12px;
+
+      color: rgba(255, 255, 255, 0.78);
+
+      font-size: 0.95rem;
+
+      text-shadow:
+        0 0 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .contact-btn {
+      display: inline-block;
+
+      margin-top: 24px;
+
+      padding: 12px 28px;
+
+      color: white;
+
+      text-decoration: none;
+
+      font-size: 16px;
+      font-weight: 600;
+
+      border:
+        1px solid #009dff;
+
+      border-radius: 30px;
+
+      background:
+        rgba(0, 50, 100, 0.55);
+
+      box-shadow:
+        0 0 10px #007cff,
+        0 0 25px rgba(0, 150, 255, 0.35);
+
+      transition: 0.3s;
+    }
+
+    .contact-btn:hover {
+      background: #006fd1;
+
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 0 15px #00aaff,
+        0 0 35px #004cff;
+    }
+
+    .shake {
+      animation:
+        shake 0.35s ease;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow:
+          0 0 18px rgba(0, 175, 255, 0.35);
+      }
+
+      50% {
+        box-shadow:
+          0 0 35px rgba(0, 145, 255, 0.65);
+      }
+
+      100% {
+        box-shadow:
+          0 0 18px rgba(0, 175, 255, 0.35);
+      }
+    }
+
+    @keyframes equalizer {
+      0%,
+      100% {
+        transform: scaleY(0.7);
+        opacity: 0.8;
+      }
+
+      50% {
+        transform: scaleY(1.2);
+        opacity: 1;
+      }
+    }
+
+    @keyframes shake {
+      0% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-5px);
+      }
+
+      50% {
+        transform: translateX(5px);
+      }
+
+      75% {
+        transform: translateX(-4px);
+      }
+
+      100% {
+        transform: translateX(0);
+      }
+    }
+
+    /* TABLETTE */
+    @media (max-width: 1024px) {
+
+      .hero {
+        background-image:
+          url("vitrine-tablette.png");
+
+        background-position:
+          center center;
+      }
+
+      .search-zone {
+        width: 68%;
+
+        left: 5%;
+
+        bottom: 7%;
+      }
+    }
+
+    /* TELEPHONE */
+    @media (max-width: 768px) {
+
+      .hero {
+        background-image:
+          url("vitrine-mobile.png");
+
+        background-position:
+          center top;
+
+        background-size:
+          cover;
+
+        min-height:
+          100svh;
+      }
+
+      .search-zone {
+        left: 5%;
+        right: 5%;
+
+        width: auto;
+
+        bottom: 5%;
+      }
+
+      .search-bar {
+        padding:
+          10px 12px;
+
+        gap: 10px;
+      }
+
+      .icon-btn {
+        width: 48px;
+        height: 48px;
+
+        font-size: 28px;
+      }
+
+      .voice-btn {
+        width: 52px;
+        height: 52px;
+      }
+
+      .search-input {
+        font-size: 1rem;
+      }
+
+      .search-note {
+        font-size: 0.82rem;
+      }
+
+      .contact-btn {
+        padding:
+          10px 24px;
+
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="hero">
+
+    <div class="search-zone">
+
+      <div class="search-bar" id="searchBar">
+
+        <button
+          class="icon-btn"
+          id="plusBtn"
+          title="Clear">
+          +
+        </button>
+
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Ask your question..."
+        >
+
+        <button
+          class="icon-btn mic-btn"
+          id="micBtn"
+          title="Microphone">
+          🎤
+        </button>
+
+        <button
+          class="voice-btn"
+          id="searchBtn"
+          title="Open ChatGPT">
+
+          <div class="bars">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+        </button>
+
+      </div>
+
+      <div
+        class="search-note"
+        id="searchNote">
+
+        Enter a search term, then press Enter or the illuminated button.
+
+      </div>
+
+      <a
+        href="contact.html"
+        class="contact-btn">
+
+        Contact
+
+      </a>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const input =
+      document.getElementById("searchInput");
+
+    const searchBtn =
+      document.getElementById("searchBtn");
+
+    const plusBtn =
+      document.getElementById("plusBtn");
+
+    const searchBar =
+      document.getElementById("searchBar");
+
+    const searchNote =
+      document.getElementById("searchNote");
+
+
+    function animateError() {
+
+      searchBar.classList.remove("shake");
+
+      void searchBar.offsetWidth;
+
+      searchBar.classList.add("shake");
+    }
+
+
+    function sendToChatGPT() {
+
+      const query =
+        input.value.trim();
+
+      if (!query) {
+
+        searchNote.textContent =
+          "Please enter a question.";
+
+        animateError();
+
+        return;
+      }
+
+
+      if (navigator.clipboard) {
+
+        navigator.clipboard
+          .writeText(query)
+          .catch(() => {});
+      }
+
+
+      window.open(
+        "https://chatgpt.com/",
+        "_blank"
+      );
+
+
+      searchNote.textContent =
+        "Question copied. Paste it into ChatGPT.";
+
+    }
+
+
+    searchBtn.addEventListener(
+      "click",
+      sendToChatGPT
+    );
+
+
+    input.addEventListener(
+      "keydown",
+      function(event) {
+
+        if (event.key === "Enter") {
+
+          sendToChatGPT();
+
+        }
+
+      }
+    );
+
+
+    plusBtn.addEventListener(
+      "click",
+      function() {
+
+        input.value = "";
+
+        input.focus();
+
+        searchNote.textContent =
+          "Enter a new question.";
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
