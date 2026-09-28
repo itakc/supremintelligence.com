@@ -570,6 +570,1241 @@
     );
 
   </script>
+<!-- ===================================================== -->
+<!-- SUPREMATOR - AGENT IA FLOTTANT                         -->
+<!-- ===================================================== -->
 
+<style>
+
+  /* ============================= */
+  /* CONTENEUR PRINCIPAL           */
+  /* ============================= */
+
+  .supremator-widget {
+    position: fixed;
+    right: 26px;
+    bottom: 26px;
+    z-index: 99999;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+
+  /* ============================= */
+  /* TEXTE "BESOIN D'AIDE ?"       */
+  /* ============================= */
+
+  .supremator-hint {
+    position: absolute;
+    right: 88px;
+    bottom: 14px;
+
+    padding: 11px 17px;
+
+    white-space: nowrap;
+
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    background: rgba(2, 18, 40, 0.88);
+
+    border: 1px solid rgba(0, 210, 255, 0.45);
+
+    border-radius: 20px;
+
+    box-shadow:
+      0 0 15px rgba(0, 180, 255, 0.20),
+      0 8px 25px rgba(0, 0, 0, 0.35);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    opacity: 1;
+
+    transition:
+      opacity .3s ease,
+      transform .3s ease;
+
+    pointer-events: none;
+  }
+
+
+  /* petite pointe de la bulle texte */
+
+  .supremator-hint::after {
+    content: "";
+
+    position: absolute;
+
+    right: -7px;
+    top: 50%;
+
+    width: 12px;
+    height: 12px;
+
+    background: rgba(2, 18, 40, 0.88);
+
+    border-top: 1px solid rgba(0, 210, 255, 0.35);
+    border-right: 1px solid rgba(0, 210, 255, 0.35);
+
+    transform:
+      translateY(-50%)
+      rotate(45deg);
+  }
+
+
+  /* ============================= */
+  /* BULLE AVATAR                  */
+  /* ============================= */
+
+  .supremator-bubble {
+    position: relative;
+
+    width: 78px;
+    height: 78px;
+
+    padding: 0;
+
+    border-radius: 50%;
+
+    border: 2px solid rgba(90, 225, 255, 0.95);
+
+    background: #00172f;
+
+    cursor: pointer;
+
+    overflow: visible;
+
+    box-shadow:
+      0 0 10px rgba(0, 210, 255, 0.95),
+      0 0 25px rgba(0, 160, 255, 0.70),
+      0 0 55px rgba(0, 100, 255, 0.38);
+
+    transition:
+      transform .25s ease,
+      box-shadow .25s ease;
+  }
+
+
+  .supremator-bubble:hover {
+    transform: scale(1.08);
+
+    box-shadow:
+      0 0 15px rgba(70, 230, 255, 1),
+      0 0 35px rgba(0, 170, 255, .85),
+      0 0 70px rgba(0, 100, 255, .55);
+  }
+
+
+  /* avatar */
+
+  .supremator-avatar {
+    position: absolute;
+
+    inset: 3px;
+
+    width: calc(100% - 6px);
+    height: calc(100% - 6px);
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    display: block;
+
+    z-index: 3;
+  }
+
+
+  /* ============================= */
+  /* ANNEAUX HOLOGRAPHIQUES        */
+  /* ============================= */
+
+  .supremator-ring,
+  .supremator-ring-2 {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+  }
+
+
+  .supremator-ring {
+    width: 94px;
+    height: 94px;
+
+    border:
+      1px solid rgba(0, 215, 255, 0.75);
+
+    transform:
+      translate(-50%, -50%);
+
+    animation:
+      suprematorPulse 2.2s infinite ease-out;
+
+    z-index: 1;
+  }
+
+
+  .supremator-ring-2 {
+    width: 108px;
+    height: 108px;
+
+    border:
+      1px solid rgba(0, 125, 255, 0.35);
+
+    transform:
+      translate(-50%, -50%);
+
+    animation:
+      suprematorPulse2 3s infinite ease-out;
+
+    z-index: 1;
+  }
+
+
+  @keyframes suprematorPulse {
+
+    0% {
+      transform:
+        translate(-50%, -50%)
+        scale(.82);
+
+      opacity: .95;
+    }
+
+    100% {
+      transform:
+        translate(-50%, -50%)
+        scale(1.35);
+
+      opacity: 0;
+    }
+
+  }
+
+
+  @keyframes suprematorPulse2 {
+
+    0% {
+      transform:
+        translate(-50%, -50%)
+        scale(.78);
+
+      opacity: .65;
+    }
+
+    100% {
+      transform:
+        translate(-50%, -50%)
+        scale(1.45);
+
+      opacity: 0;
+    }
+
+  }
+
+
+  /* ============================= */
+  /* INDICATEUR DISPONIBLE         */
+  /* ============================= */
+
+  .supremator-status {
+    position: absolute;
+
+    right: 4px;
+    bottom: 4px;
+
+    width: 15px;
+    height: 15px;
+
+    border-radius: 50%;
+
+    background: #2effa4;
+
+    border: 3px solid #00162c;
+
+    box-shadow:
+      0 0 8px rgba(46,255,164,.8);
+
+    z-index: 5;
+  }
+
+
+  /* ============================= */
+  /* FENÊTRE DU CHATBOT            */
+  /* ============================= */
+
+  .supremator-chat {
+    position: absolute;
+
+    right: 0;
+    bottom: 100px;
+
+    width: 365px;
+
+    border-radius: 22px;
+
+    overflow: hidden;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform:
+      translateY(20px)
+      scale(.96);
+
+    transform-origin:
+      bottom right;
+
+    transition:
+      opacity .3s ease,
+      transform .3s ease,
+      visibility .3s ease;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(2, 20, 43, .98),
+        rgba(0, 12, 30, .97)
+      );
+
+    border:
+      1px solid rgba(70, 210, 255, .40);
+
+    box-shadow:
+      0 0 30px rgba(0, 170, 255, .18),
+      0 25px 70px rgba(0, 0, 0, .55);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+
+  .supremator-chat.open {
+    opacity: 1;
+
+    visibility: visible;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+
+
+  /* ============================= */
+  /* EN-TÊTE                       */
+  /* ============================= */
+
+  .supremator-header {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-height: 76px;
+
+    padding: 12px 16px;
+
+    background:
+      linear-gradient(
+        100deg,
+        rgba(0, 93, 190, .92),
+        rgba(0, 185, 255, .88)
+      );
+
+    border-bottom:
+      1px solid rgba(100, 220, 255, .35);
+  }
+
+
+  .supremator-header-avatar {
+    width: 50px;
+    height: 50px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+    border:
+      2px solid rgba(255,255,255,.85);
+
+    box-shadow:
+      0 0 15px rgba(110, 225, 255, .8);
+  }
+
+
+  .supremator-title {
+    flex: 1;
+  }
+
+
+  .supremator-title strong {
+    display: block;
+
+    color: white;
+
+    font-size: 17px;
+  }
+
+
+  .supremator-title span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: rgba(255,255,255,.83);
+
+    font-size: 12px;
+  }
+
+
+  .supremator-close {
+    width: 34px;
+    height: 34px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background:
+      rgba(0, 30, 70, .30);
+
+    color: white;
+
+    font-size: 25px;
+
+    line-height: 30px;
+
+    cursor: pointer;
+
+    transition:
+      background .2s ease,
+      transform .2s ease;
+  }
+
+
+  .supremator-close:hover {
+    background:
+      rgba(255,255,255,.18);
+
+    transform:
+      rotate(90deg);
+  }
+
+
+  /* ============================= */
+  /* ZONE DE CONVERSATION          */
+  /* ============================= */
+
+  .supremator-messages {
+    height: 330px;
+
+    padding: 20px;
+
+    overflow-y: auto;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+      #168ed4
+      rgba(0,0,0,.15);
+  }
+
+
+  .supremator-message {
+    max-width: 85%;
+
+    margin-bottom: 14px;
+
+    padding: 12px 15px;
+
+    border-radius: 16px;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    animation:
+      suprematorMessage .35s ease;
+  }
+
+
+  @keyframes suprematorMessage {
+
+    from {
+      opacity: 0;
+
+      transform:
+        translateY(8px);
+    }
+
+    to {
+      opacity: 1;
+
+      transform:
+        translateY(0);
+    }
+
+  }
+
+
+  .supremator-message.bot {
+
+    margin-right: auto;
+
+    color: #eafaff;
+
+    background:
+      rgba(0, 110, 190, .24);
+
+    border:
+      1px solid rgba(40, 190, 255, .20);
+
+    border-bottom-left-radius: 4px;
+  }
+
+
+  .supremator-message.user {
+
+    margin-left: auto;
+
+    color: white;
+
+    background:
+      linear-gradient(
+        120deg,
+        #006cc8,
+        #00aeea
+      );
+
+    border-bottom-right-radius: 4px;
+  }
+
+
+  /* ============================= */
+  /* BOUTONS SUGGESTIONS           */
+  /* ============================= */
+
+  .supremator-suggestions {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    padding:
+      0 18px 15px;
+  }
+
+
+  .supremator-suggestion {
+
+    padding:
+      8px 11px;
+
+    border-radius:
+      999px;
+
+    border:
+      1px solid rgba(50, 205, 255, .30);
+
+    background:
+      rgba(0, 100, 180, .16);
+
+    color:
+      #c9f5ff;
+
+    font-size:
+      12px;
+
+    cursor:
+      pointer;
+
+    transition:
+      .2s ease;
+  }
+
+
+  .supremator-suggestion:hover {
+
+    background:
+      rgba(0, 160, 230, .30);
+
+    border-color:
+      rgba(80,220,255,.65);
+
+    color:
+      white;
+  }
+
+
+  /* ============================= */
+  /* BARRE DE SAISIE               */
+  /* ============================= */
+
+  .supremator-input-area {
+
+    display:
+      flex;
+
+    align-items:
+      center;
+
+    gap:
+      8px;
+
+    padding:
+      13px;
+
+    border-top:
+      1px solid rgba(80, 200, 255, .18);
+
+    background:
+      rgba(0, 9, 22, .58);
+  }
+
+
+  .supremator-input {
+
+    flex:
+      1;
+
+    min-width:
+      0;
+
+    padding:
+      12px 15px;
+
+    border:
+      1px solid rgba(60, 190, 255, .25);
+
+    border-radius:
+      999px;
+
+    outline:
+      none;
+
+    background:
+      rgba(255,255,255,.07);
+
+    color:
+      white;
+
+    font-size:
+      14px;
+  }
+
+
+  .supremator-input::placeholder {
+    color:
+      rgba(210,240,255,.58);
+  }
+
+
+  .supremator-input:focus {
+
+    border-color:
+      #25c8ff;
+
+    box-shadow:
+      0 0 12px rgba(0,190,255,.20);
+  }
+
+
+  .supremator-send {
+
+    width:
+      44px;
+
+    height:
+      44px;
+
+    flex:
+      0 0 44px;
+
+    border:
+      none;
+
+    border-radius:
+      50%;
+
+    background:
+      linear-gradient(
+        135deg,
+        #0085dd,
+        #00d0ff
+      );
+
+    color:
+      white;
+
+    font-size:
+      20px;
+
+    cursor:
+      pointer;
+
+    box-shadow:
+      0 0 14px rgba(0,190,255,.35);
+
+    transition:
+      transform .2s ease;
+  }
+
+
+  .supremator-send:hover {
+    transform:
+      scale(1.08);
+  }
+
+
+  /* ============================= */
+  /* PIED                          */
+  /* ============================= */
+
+  .supremator-footer {
+
+    padding:
+      7px 10px 10px;
+
+    text-align:
+      center;
+
+    font-size:
+      10px;
+
+    color:
+      rgba(170,220,240,.50);
+  }
+
+
+  /* ============================= */
+  /* RESPONSIVE MOBILE             */
+  /* ============================= */
+
+  @media (max-width: 600px) {
+
+    .supremator-widget {
+
+      right:
+        14px;
+
+      bottom:
+        14px;
+
+    }
+
+
+    .supremator-bubble {
+
+      width:
+        66px;
+
+      height:
+        66px;
+
+    }
+
+
+    .supremator-ring {
+
+      width:
+        80px;
+
+      height:
+        80px;
+
+    }
+
+
+    .supremator-ring-2 {
+
+      width:
+        92px;
+
+      height:
+        92px;
+
+    }
+
+
+    .supremator-hint {
+      display:
+        none;
+    }
+
+
+    .supremator-chat {
+
+      position:
+        fixed;
+
+      left:
+        10px;
+
+      right:
+        10px;
+
+      bottom:
+        94px;
+
+      width:
+        auto;
+
+      max-height:
+        calc(100vh - 115px);
+
+    }
+
+
+    .supremator-messages {
+
+      height:
+        280px;
+
+    }
+
+  }
+
+</style>
+
+
+<!-- ===================================================== -->
+<!-- HTML                                                  -->
+<!-- ===================================================== -->
+
+<div class="supremator-widget">
+
+  <!-- petite invitation -->
+
+  <div
+    class="supremator-hint"
+    id="suprematorHint"
+  >
+    Besoin d’aide ? Demandez à Supremator
+  </div>
+
+
+  <!-- fenêtre chatbot -->
+
+  <div
+    class="supremator-chat"
+    id="suprematorChat"
+  >
+
+    <div class="supremator-header">
+
+      <img
+        src="supremator.png"
+        alt="Supremator"
+        class="supremator-header-avatar"
+      >
+
+      <div class="supremator-title">
+
+        <strong>
+          Supremator
+        </strong>
+
+        <span>
+          Agent intelligent • En ligne
+        </span>
+
+      </div>
+
+      <button
+        class="supremator-close"
+        id="suprematorClose"
+        aria-label="Fermer"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <!-- conversation -->
+
+    <div
+      class="supremator-messages"
+      id="suprematorMessages"
+    >
+
+      <div
+        class="supremator-message bot"
+      >
+        Bonjour 👋
+        <br><br>
+
+        Je suis <strong>Supremator</strong>,
+        l’agent intelligent de
+        <strong>Suprem Intelligence</strong>.
+        <br><br>
+
+        Comment puis-je vous aider ?
+      </div>
+
+    </div>
+
+
+    <!-- suggestions -->
+
+    <div
+      class="supremator-suggestions"
+      id="suprematorSuggestions"
+    >
+
+      <button
+        class="supremator-suggestion"
+        data-message="Que peut faire Suprem Intelligence ?"
+      >
+        Découvrir Suprem Intelligence
+      </button>
+
+      <button
+        class="supremator-suggestion"
+        data-message="Comment puis-je vous contacter ?"
+      >
+        Contact
+      </button>
+
+      <button
+        class="supremator-suggestion"
+        data-message="Qui est Supremator ?"
+      >
+        Qui est Supremator ?
+      </button>
+
+    </div>
+
+
+    <!-- saisie -->
+
+    <div class="supremator-input-area">
+
+      <input
+        type="text"
+        id="suprematorInput"
+        class="supremator-input"
+        placeholder="Posez votre question..."
+        autocomplete="off"
+      >
+
+      <button
+        class="supremator-send"
+        id="suprematorSend"
+        aria-label="Envoyer"
+      >
+        ➜
+      </button>
+
+    </div>
+
+
+    <div class="supremator-footer">
+      Supremator • Suprem Intelligence
+    </div>
+
+  </div>
+
+
+  <!-- avatar flottant -->
+
+  <button
+    class="supremator-bubble"
+    id="suprematorBubble"
+    aria-label="Ouvrir Supremator"
+  >
+
+    <span class="supremator-ring"></span>
+    <span class="supremator-ring-2"></span>
+
+    <img
+      src="supremator.png"
+      alt="Supremator"
+      class="supremator-avatar"
+    >
+
+    <span class="supremator-status"></span>
+
+  </button>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- JAVASCRIPT                                            -->
+<!-- ===================================================== -->
+
+<script>
+
+  const suprematorBubble =
+    document.getElementById("suprematorBubble");
+
+  const suprematorChat =
+    document.getElementById("suprematorChat");
+
+  const suprematorClose =
+    document.getElementById("suprematorClose");
+
+  const suprematorInput =
+    document.getElementById("suprematorInput");
+
+  const suprematorSend =
+    document.getElementById("suprematorSend");
+
+  const suprematorMessages =
+    document.getElementById("suprematorMessages");
+
+  const suprematorHint =
+    document.getElementById("suprematorHint");
+
+
+
+  /* ouvrir Supremator */
+
+  suprematorBubble.addEventListener(
+    "click",
+    function() {
+
+      suprematorChat.classList.toggle("open");
+
+      if (
+        suprematorChat.classList.contains("open")
+      ) {
+
+        suprematorHint.style.opacity = "0";
+
+        setTimeout(
+          () => suprematorInput.focus(),
+          300
+        );
+
+      }
+
+    }
+  );
+
+
+
+  /* fermer */
+
+  suprematorClose.addEventListener(
+    "click",
+    function() {
+
+      suprematorChat.classList.remove("open");
+
+    }
+  );
+
+
+
+  /* ajouter message */
+
+  function addMessage(
+    text,
+    sender
+  ) {
+
+    const message =
+      document.createElement("div");
+
+    message.className =
+      "supremator-message " + sender;
+
+    message.textContent =
+      text;
+
+    suprematorMessages.appendChild(
+      message
+    );
+
+    suprematorMessages.scrollTop =
+      suprematorMessages.scrollHeight;
+
+  }
+
+
+
+  /* réponses temporaires */
+
+  function temporaryResponse(
+    message
+  ) {
+
+    const question =
+      message.toLowerCase();
+
+
+
+    setTimeout(
+      function() {
+
+        if (
+          question.includes("contact")
+        ) {
+
+          addMessage(
+            "Vous pouvez utiliser la page Contact de Suprem Intelligence. Lorsque la connexion IA sera activée, je pourrai également vous orienter directement.",
+            "bot"
+          );
+
+        }
+
+        else if (
+          question.includes("supremator")
+        ) {
+
+          addMessage(
+            "Je suis Supremator, l'agent intelligent de Suprem Intelligence. Mon interface est déjà opérationnelle et ma connexion à l'intelligence artificielle sera la prochaine étape.",
+            "bot"
+          );
+
+        }
+
+        else if (
+          question.includes("suprem intelligence") ||
+          question.includes("supremintelligence")
+        ) {
+
+          addMessage(
+            "Suprem Intelligence est un univers consacré à l'apprentissage, à la compréhension et à la maîtrise du savoir.",
+            "bot"
+          );
+
+        }
+
+        else {
+
+          addMessage(
+            "Mon interface est opérationnelle. La prochaine étape sera de connecter mon moteur d'intelligence artificielle pour pouvoir répondre réellement à cette question.",
+            "bot"
+          );
+
+        }
+
+      },
+      550
+    );
+
+  }
+
+
+
+  /* envoyer */
+
+  function sendSuprematorMessage() {
+
+    const message =
+      suprematorInput.value.trim();
+
+    if (!message) {
+      return;
+    }
+
+    addMessage(
+      message,
+      "user"
+    );
+
+    suprematorInput.value = "";
+
+    temporaryResponse(
+      message
+    );
+
+  }
+
+
+
+  suprematorSend.addEventListener(
+    "click",
+    sendSuprematorMessage
+  );
+
+
+
+  suprematorInput.addEventListener(
+    "keydown",
+    function(event) {
+
+      if (
+        event.key === "Enter"
+      ) {
+
+        sendSuprematorMessage();
+
+      }
+
+    }
+  );
+
+
+
+  /* boutons suggestions */
+
+  document
+    .querySelectorAll(
+      ".supremator-suggestion"
+    )
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          function() {
+
+            const message =
+              this.dataset.message;
+
+            addMessage(
+              message,
+              "user"
+            );
+
+            temporaryResponse(
+              message
+            );
+
+          }
+        );
+
+      }
+    );
+
+
+  /* disparition automatique
+     du petit message après 8 sec */
+
+  setTimeout(
+    function() {
+
+      if (
+        !suprematorChat.classList.contains(
+          "open"
+        )
+      ) {
+
+        suprematorHint.style.opacity = ".55";
+
+      }
+
+    },
+    8000
+  );
+
+</script>
 </body>
 </html>
